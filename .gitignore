@@ -396,3 +396,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+/StoreFront.UI.MVC/appsettings.json
+
+/StoreFront.UI.MVC/_Archive/

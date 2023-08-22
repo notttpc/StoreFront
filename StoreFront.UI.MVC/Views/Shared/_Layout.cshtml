@@ -54,6 +54,8 @@
                             <li class="nav-item"><a class="nav-link" href="#!"> <i class="far fa-heart me-1"></i><small class="text-gray fw-normal"> (0)</small></a></li>
                             <li class="nav-item"><a class="nav-link" href="#!"> <i class="fas fa-user me-1 text-gray fw-normal"></i>Login</a></li>
                         </ul>
+                        <i class="fas fa-user me-1 text-gray fw-normal"></i>
+                        <partial name="_LoginPartial" />
                     </div>
                 </nav>
             </div>
@@ -138,6 +140,7 @@
             injectSvgSprite('https://bootstraptemple.com/files/icons/orion-svg-sprite.svg');
 
         </script>
+        @RenderSection("scripts", false)
         <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     </div>

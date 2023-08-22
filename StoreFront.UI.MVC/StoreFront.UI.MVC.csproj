@@ -599,6 +599,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StoreFront.DATA.EF\StoreFront.DATA.EF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\js\countries.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

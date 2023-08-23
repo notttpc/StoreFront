@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
-    <!-- gLightbox gallery-->
+    <!-- Lightbox gallery-->
     <link rel="stylesheet" href="~/vendor/glightbox/css/glightbox.min.css">
     <!-- Range slider-->
     <link rel="stylesheet" href="~/vendor/nouislider/nouislider.min.css">
@@ -36,18 +36,24 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
-                                <!-- Link--><a class="nav-link active" href="index.html">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <!-- Link--><a class="nav-link" href="shop.html">Shop</a>
-                            </li>
-                            <li class="nav-item">
-                                <!-- Link--><a class="nav-link" href="detail.html">Product detail</a>
+                                <!-- Link--><a class="nav-link active" href="@Url.Action("Index", "Home")">Home</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
                                 <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown"><a class="dropdown-item border-0 transition-link" href="index.html">Homepage</a><a class="dropdown-item border-0 transition-link" href="shop.html">Category</a><a class="dropdown-item border-0 transition-link" href="detail.html">Product detail</a><a class="dropdown-item border-0 transition-link" href="cart.html">Shopping cart</a><a class="dropdown-item border-0 transition-link" href="checkout.html">Checkout</a></div>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                                <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown"><a class="dropdown-item border-0 transition-link" href="@Url.Action("ListRoles", "Administration")">Roles</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("ListUsers", "Administration")">Users</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("Index", "Companies")">Companies</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("Index", "Categories")"">Categories</a>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <!-- Link--><a class="nav-link" href="@Url.Action("Index", "Products")">Shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <!-- Link--><a class="nav-link" href="@Url.Action("Index", "ProductStatus")">Product detail</a>
+                            </li>
+                            
                         </ul>
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item"><a class="nav-link" href="cart.html"> <i class="fas fa-dolly-flatbed me-1 text-gray"></i>Cart<small class="text-gray fw-normal">(2)</small></a></li>

@@ -25,6 +25,12 @@ namespace StoreFront.UI.MVC.Controllers
             return View(await animeShopContext.ToListAsync());
         }
 
+        public async Task<IActionResult> AdminView()
+        {
+            var animeShopContext = _context.Products.Include(p => p.Category).Include(p => p.Company).Include(p => p.Genre).Include(p => p.ProductStatus).Include(p => p.Sword);
+            return View(await animeShopContext.ToListAsync());
+        }
+
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -64,7 +70,7 @@ namespace StoreFront.UI.MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId,ProductPrice,IsFeatured")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -106,7 +112,7 @@ namespace StoreFront.UI.MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId,ProductPrice,IsFeatured")] Product product)
         {
             if (id != product.ProductId)
             {

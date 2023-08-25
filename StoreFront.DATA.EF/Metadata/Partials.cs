@@ -9,8 +9,7 @@ using System.Xml.Linq;
 
 namespace StoreFront.DATA.EF.Models//.Metadata
 {
-    internal class Partials
-    {
+   
         #region Category Metadata
         [ModelMetadataType(typeof(CategoryMetadata))]
         public partial class Category { }
@@ -50,5 +49,5 @@ namespace StoreFront.DATA.EF.Models//.Metadata
         [ModelMetadataType(typeof(UserDetailMetadata))]
         public partial class UserDetail { }
         #endregion
-    }
+    
 }

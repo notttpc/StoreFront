@@ -19,11 +19,14 @@ namespace StoreFront.DATA.EF.Models
         public int CompanyId { get; set; }
         public int? SwordId { get; set; }
         public int? GenreId { get; set; }
+        public decimal ProductPrice { get; set; }
+        public bool IsFeatured { get; set; }
 
-        public virtual Category Category { get; set; } = null!;
-        public virtual Company Company { get; set; } = null!;
+        
+        public virtual Category? Category { get; set; } 
+        public virtual Company? Company { get; set; } 
         public virtual Genre? Genre { get; set; }
-        public virtual ProductStatus ProductStatus { get; set; } = null!;
+        public virtual ProductStatus? ProductStatus { get; set; }
         public virtual SwordType? Sword { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; }
     }

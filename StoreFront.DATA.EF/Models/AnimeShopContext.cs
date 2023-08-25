@@ -37,7 +37,7 @@ namespace StoreFront.DATA.EF.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=.\\sqlexpress;Database=AnimeShop;Trusted_Connection=true;MultipleActiveResultSets=true;");
+                optionsBuilder.UseSqlServer("Server=.\\sqlexpress;Database=AnimeShop;Trusted_Connection=True;MultipleActiveResultSets=true;");
             }
         }
 
@@ -251,6 +251,8 @@ namespace StoreFront.DATA.EF.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ProductPrice).HasColumnType("money");
+
                 entity.Property(e => e.ProductStatusId).HasColumnName("ProductStatusID");
 
                 entity.Property(e => e.SwordId).HasColumnName("SwordID");
@@ -265,12 +267,12 @@ namespace StoreFront.DATA.EF.Models
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.CompanyId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Products_Company");
+                    .HasConstraintName("FK_Products_Companies");
 
                 entity.HasOne(d => d.Genre)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.GenreId)
-                    .HasConstraintName("FK_Products_Genre");
+                    .HasConstraintName("FK_Products_Genres");
 
                 entity.HasOne(d => d.ProductStatus)
                     .WithMany(p => p.Products)

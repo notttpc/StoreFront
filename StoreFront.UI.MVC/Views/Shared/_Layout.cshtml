@@ -1,9 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Boutique | Ecommerce bootstrap template</title>
+    <title>@ViewBag.Title | Anime Shop</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
@@ -31,37 +32,41 @@
         <header class="header bg-white">
             <div class="container px-lg-3">
                 <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0">
-                    <a class="navbar-brand" href="index.html"><span class="fw-bold text-uppercase text-dark">Boutique</span></a>
+                    <a class="navbar-brand" href="index.html"><span class="fw-bold text-uppercase text-dark">Anime Shop</span></a>
                     <button class="navbar-toggler navbar-toggler-end" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
                                 <!-- Link--><a class="nav-link active" href="@Url.Action("Index", "Home")">Home</a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
-                                <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown"><a class="dropdown-item border-0 transition-link" href="index.html">Homepage</a><a class="dropdown-item border-0 transition-link" href="shop.html">Category</a><a class="dropdown-item border-0 transition-link" href="detail.html">Product detail</a><a class="dropdown-item border-0 transition-link" href="cart.html">Shopping cart</a><a class="dropdown-item border-0 transition-link" href="checkout.html">Checkout</a></div>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
-                                <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown"><a class="dropdown-item border-0 transition-link" href="@Url.Action("ListRoles", "Administration")">Roles</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("ListUsers", "Administration")">Users</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("Index", "Companies")">Companies</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("Index", "Categories")"">Categories</a>
-                                </div>
-                            </li>
                             <li class="nav-item">
                                 <!-- Link--><a class="nav-link" href="@Url.Action("Index", "Products")">Shop</a>
                             </li>
                             <li class="nav-item">
                                 <!-- Link--><a class="nav-link" href="@Url.Action("Index", "ProductStatus")">Product detail</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                                <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown"><a class="dropdown-item border-0 transition-link" href="index.html">Homepage</a><a class="dropdown-item border-0 transition-link" href="shop.html">Category</a><a class="dropdown-item border-0 transition-link" href="detail.html">Product detail</a><a class="dropdown-item border-0 transition-link" href="cart.html">Shopping cart</a><a class="dropdown-item border-0 transition-link" href="checkout.html">Checkout</a></div>
                             </li>
-                            
+                            </li><li class="nav-item">
+                                <!-- Link--><a class="nav-link" href="@Url.Action("Contact", "Home")">Contact Us</a>
+                            </li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                                    <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown">
+                                        <a class="dropdown-item border-0 transition-link" href="@Url.Action("ListRoles", "Administration")">Roles</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("ListUsers", "Administration")">Users</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("Index", "Companies")">Companies</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("Index", "Categories")">Categories</a>
+                                    </div>
+                                </li>
+                            }
                         </ul>
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item"><a class="nav-link" href="cart.html"> <i class="fas fa-dolly-flatbed me-1 text-gray"></i>Cart<small class="text-gray fw-normal">(2)</small></a></li>
                             <li class="nav-item"><a class="nav-link" href="#!"> <i class="far fa-heart me-1"></i><small class="text-gray fw-normal"> (0)</small></a></li>
-                            <li class="nav-item"><a class="nav-link" href="#!"> <i class="fas fa-user me-1 text-gray fw-normal"></i>Login</a></li>
+                            @*<li class="nav-item"><a class="nav-link" href="#!"> <i class="fas fa-user me-1 text-gray fw-normal"></i>Login</a></li>*@
+                            <partial name="_LoginPartial" />
                         </ul>
-                        <i class="fas fa-user me-1 text-gray fw-normal"></i>
-                        <partial name="_LoginPartial" />
                     </div>
                 </nav>
             </div>
@@ -103,7 +108,7 @@
                 <div class="border-top pt-4" style="border-color: #1d1d1d !important">
                     <div class="row">
                         <div class="col-md-6 text-center text-md-start">
-                            <p class="small text-muted mb-0">&copy; 2021 All rights reserved.</p>
+                            <p class="small text-muted mb-0">&copy; @DateTime.Now.Year All rights reserved.</p>
                         </div>
                         <div class="col-md-6 text-center text-md-end">
                             <p class="small text-muted mb-0">Template designed by <a class="text-white reset-anchor" href="https://bootstrapious.com/p/boutique-bootstrap-e-commerce-template">Bootstrapious</a></p>

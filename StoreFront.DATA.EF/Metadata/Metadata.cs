@@ -123,6 +123,12 @@ namespace StoreFront.DATA.EF.Models//.Metadata
         public int CompanyId { get; set; }
         public int? SwordId { get; set; }
         public int? GenreId { get; set; }
+        [Display(Name = "Price")]
+        [DisplayFormat(DataFormatString = "{0:c}", ApplyFormatInEditMode = false)]
+        [Range(0, (double)decimal.MaxValue)]
+        public decimal ProductPrice { get; set; }
+        [Display(Name = "Featured?")]
+        public bool IsFeatured { get; set; }
 
     }
     #endregion

@@ -1,14 +1,23 @@
 ﻿@model IEnumerable<StoreFront.DATA.EF.Models.Product>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Admin View Products";
 }
 
-<h1>Index</h1>
+@*<h1>Index</h1>*@
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<section class="product_section layout_padding gray-section pb-4 pt-4 mb-4">
+    <div class="heading_container heading_center">
+        <h2 class="text-center">
+            Admin <span>Products</span>
+        </h2>
+        <p align="center">
+            <a asp-action="Create">Create New Product |</a>
+            <a asp-action="Index">Back to Tiles</a>
+        </p>
+    </div>
+</section>
+
 <table class="table">
     <thead>
         <tr>
@@ -50,13 +59,16 @@
         {
             <tr>
                 <td>
+                    <a asp-action="Details" asp-route-id="@item.ProductId" asp-route-prevAction="Index">
                     @Html.DisplayFor(modelItem => item.ProductName)
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ProductDescription)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProductImage)
+                    <img src="~/img/t_@item.ProductImage" class="img-fluid" alt="@item.ProductName" longdesc="@item.ProductDescription" />
+                    @*@Html.DisplayFor(modelItem => item.ProductImage)*@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ProductPrice)
@@ -77,11 +89,10 @@
                     @Html.DisplayFor(modelItem => item.ProductStatus.StatusDescription)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Sword.SwordId)
+                    @Html.DisplayFor(modelItem => item.Sword.SwordType1)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
                 </td>
             </tr>

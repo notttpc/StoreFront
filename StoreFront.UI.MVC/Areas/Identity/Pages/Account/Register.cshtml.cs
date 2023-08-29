@@ -97,6 +97,38 @@ namespace StoreFront.UI.MVC.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [StringLength(128, ErrorMessage = "*Must be 128 characters or less")]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; } = null!;
+
+            [Required]
+            [StringLength(128, ErrorMessage = "*Must be 128 characters or less")]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; } = null!;
+
+            [Required]
+            [StringLength(128, ErrorMessage = "*Must be 128 characters or less")]
+            [Display(Name = "Street Address")]
+            public string? Address { get; set; }
+
+            [StringLength(128, ErrorMessage = "*Must be 128 characters or less")]
+            [Display(Name = "City")]
+            public string? City { get; set; }
+
+            [StringLength(128, ErrorMessage = "*Must be 128 characters or less")]
+            [Display(Name = "State")]
+            public string? State { get; set; }
+
+            [StringLength(128, ErrorMessage = "*Must be 128 characters or less")]
+            [Display(Name = "Zip")]
+            [DataType(DataType.PostalCode)]
+            public string? Zip { get; set; }
+
+            [StringLength(128, ErrorMessage = "*Must be 128 characters or less")]
+            [Display(Name = "Phone #")]
+            [DataType(DataType.PhoneNumber)]
+            public string? Phone { get; set; }
         }
 
 

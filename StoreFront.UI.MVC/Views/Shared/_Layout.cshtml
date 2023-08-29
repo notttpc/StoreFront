@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="~/vendor/nouislider/nouislider.min.css">
     <!-- Choices CSS-->
     <link rel="stylesheet" href="~/vendor/choices.js/public/assets/styles/choices.min.css">
+    <link rel="stylesheet" href="~/vendor/css/custom.css"/>
     <!-- Swiper slider-->
     <link rel="stylesheet" href="~/vendor/swiper/swiper-bundle.min.css">
     <!-- Google fonts-->
@@ -29,7 +30,7 @@
 <body>
     <div class="page-holder">
         <!-- navbar-->
-        <header class="header bg-white">
+        <header class="header bg-light">
             <div class="container px-lg-3">
                 <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0">
                     <a class="navbar-brand" href="index.html"><span class="fw-bold text-uppercase text-dark">Anime Shop</span></a>
@@ -37,20 +38,21 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item">
-                                <!-- Link--><a class="nav-link active" href="@Url.Action("Index", "Home")">Home</a>
+                                <!-- Link--><a class="nav-link" href="@Url.Action("Index", "Home")">Home</a>
                             </li>
                             <li class="nav-item">
                                 <!-- Link--><a class="nav-link" href="@Url.Action("Index", "Products")">Shop</a>
                             </li>
-                            <li class="nav-item">
+                            @*<li class="nav-item">
                                 <!-- Link--><a class="nav-link" href="@Url.Action("Index", "ProductStatus")">Product detail</a>
-                            <li class="nav-item dropdown">
+                            </li>*@
+                            @*<li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
                                 <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown"><a class="dropdown-item border-0 transition-link" href="index.html">Homepage</a><a class="dropdown-item border-0 transition-link" href="shop.html">Category</a><a class="dropdown-item border-0 transition-link" href="detail.html">Product detail</a><a class="dropdown-item border-0 transition-link" href="cart.html">Shopping cart</a><a class="dropdown-item border-0 transition-link" href="checkout.html">Checkout</a></div>
-                            </li>
-                            </li><li class="nav-item">
+                            </li>*@
+                            @*<li class="nav-item">
                                 <!-- Link--><a class="nav-link" href="@Url.Action("Contact", "Home")">Contact Us</a>
-                            </li>
+                            </li>*@
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item dropdown">
@@ -98,10 +100,10 @@
                     <div class="col-md-4">
                         <h6 class="text-uppercase mb-3">Social media</h6>
                         <ul class="list-unstyled mb-0">
-                            <li><a class="footer-link" href="#!">Twitter</a></li>
-                            <li><a class="footer-link" href="#!">Instagram</a></li>
-                            <li><a class="footer-link" href="#!">Tumblr</a></li>
-                            <li><a class="footer-link" href="#!">Pinterest</a></li>
+                            <li><a class="footer-link" href="https://twitter.com/blake55568727?s=21&t=L28KExip9BhEiPE_cVMkg" target="_blank">Twitter</a></li>
+                            <li><a class="footer-link" href="https://instagram.com/blake_m_harrison?igshid=OGQ5ZDc2ODk2ZA==" target="_blank">Instagram</a></li>
+                            <li><a class="footer-link" href="https://github.com/notttpc" target="_blank">Github</a></li>
+                            <li><a class="footer-link" href="https://www.linkedin.com/in/blake-harrison-664491284" target="_blank">LinkedIn</a></li>
                         </ul>
                     </div>
                 </div>
@@ -126,6 +128,7 @@
         <script src="~/vendor/swiper/swiper-bundle.min.js"></script>
         <script src="~/vendor/choices.js/public/assets/scripts/choices.min.js"></script>
         <script src="~/js/front.js"></script>
+        <script src="~/jquery/dist/jquery.min.js"></script>
         <script>
             // ------------------------------------------------------- //
             //   Inject SVG Sprite -
@@ -150,6 +153,19 @@
             // pls don't forget to change to your domain :)
             injectSvgSprite('https://bootstraptemple.com/files/icons/orion-svg-sprite.svg');
 
+        </script>
+        <script>
+            $('.navbar-nav li a').each(function () {
+
+                if ($(this).attr('href') == window.location.pathname) {
+
+                    //Add the "active" class to the <li> tag
+
+                    $(this).addClass('active');
+
+                }
+
+            });
         </script>
         @RenderSection("scripts", false)
         <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->

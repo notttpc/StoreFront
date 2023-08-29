@@ -26,6 +26,7 @@ namespace StoreFront.UI.MVC.Controllers
             return View(animeShopContext.ToList());
         }
 
+
         public IActionResult Privacy()
         {
             return View();

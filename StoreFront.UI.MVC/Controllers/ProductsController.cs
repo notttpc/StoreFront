@@ -2,28 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StoreFront.DATA.EF.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Drawing;
+using GadgetStore.UI.MVC.Utilities;
 
 namespace StoreFront.UI.MVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductsController : Controller
     {
         private readonly AnimeShopContext _context;
 
-        public ProductsController(AnimeShopContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public ProductsController(AnimeShopContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Products
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var animeShopContext = _context.Products.Include(p => p.Category).Include(p => p.Company).Include(p => p.Genre).Include(p => p.ProductStatus).Include(p => p.Sword);
+            ViewBag.Categories = _context.Categories.ToList();
             return View(await animeShopContext.ToListAsync());
         }
+
 
         public async Task<IActionResult> AdminView()
         {
@@ -32,6 +43,7 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Products/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Products == null)
@@ -61,7 +73,7 @@ namespace StoreFront.UI.MVC.Controllers
             ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyName");
             ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", "GenreName");
             ViewData["ProductStatusId"] = new SelectList(_context.ProductStatuses, "ProductStatusId", "StatusDescription");
-            ViewData["SwordId"] = new SelectList(_context.SwordTypes, "SwordId", "SwordId");
+            ViewData["SwordId"] = new SelectList(_context.SwordTypes, "SwordId", "SwordType1");
             return View();
         }
 
@@ -70,10 +82,81 @@ namespace StoreFront.UI.MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId,ProductPrice,IsFeatured")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId,ProductPrice,IsFeatured,Image")] Product product)
         {
             if (ModelState.IsValid)
             {
+                #region File Upload - CREATE
+
+                //Check if a file was uploaded
+                if (product.Image != null)
+                {
+                    //Check the file type of the image by retrieving the extension
+                    string ext = Path.GetExtension(product.Image.FileName);
+
+                    //Create a list of valid extensions to check against
+                    string[] validExts = { ".jpeg", ".jpg", ".gif", ".png" };
+
+                    //Verify that the uploaded file has one of the appropriate extensions listed above
+                    //and that it is within the file size limitation for our .NET app
+                    if (validExts.Contains(ext.ToLower()) && product.Image.Length < 4_194_303) //Underscores don't change the value
+                                                                                               //of the number -- just the appearance
+                    {
+                        //Generate a unique file name for the image
+                        product.ProductImage = Guid.NewGuid() + ext;
+
+                        //Save the file to the web server (Here, in our app, we will save to wwwroot/images)
+                        //To access the wwwroot, we have to add a field to the controller for the _webHostEnvironment.
+
+                        //Retrieve the path to the wwwroot
+                        string webRootPath = _webHostEnvironment.WebRootPath;
+
+                        //Create the path for where we want to save the images
+                        string fullImagePath = webRootPath + "/img/";
+
+                        //Create a MemoryStream to read the image into server memory
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            //Transfer the file from the request into server memory
+                            await product.Image.CopyToAsync(memoryStream);
+
+                            //Create a copy of the image so we can manipulate & save it as needed
+                            //(Will need to add a using statement for the System.Drawing namepsace)
+                            using (var img = Image.FromStream(memoryStream))
+                            {
+                                //Use the ImageUtility for resizing and thumbnail creation
+
+                                //Items needed for the ImageUtility.ResizeImage():
+                                //1) (string) full path where the file will be saved
+                                //2) (string) the name of the file
+                                //3) (Image) the image itself
+                                //4) (int) maxmimum image size
+                                //5) (int) maximum thumbnail size
+
+                                int maxImageSize = 500; //500 px
+                                int maxThumbSize = 100; //100 px
+
+                                ImageUtility.ResizeImage(fullImagePath, product.ProductImage, img, maxImageSize, maxThumbSize);
+
+                                //If you need to save a file type that is a not an image...
+                                //myFile.Save("path/to/folder", "fileName");
+
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+                    //If no image was uploaded, assign a default file name. We can then add our 
+                    //own placeholder image (with whatever file name you'd like, as well as an optional 
+                    //t_ version for the thumbnail) to our wwwroot/images that will be displayed instead.
+
+                    product.ProductImage = "noimage.png";
+                }
+
+                #endregion
+
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -82,7 +165,7 @@ namespace StoreFront.UI.MVC.Controllers
             ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyName", product.CompanyId);
             ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", "GenreName", product.GenreId);
             ViewData["ProductStatusId"] = new SelectList(_context.ProductStatuses, "ProductStatusId", "StatusDescription", product.ProductStatusId);
-            ViewData["SwordId"] = new SelectList(_context.SwordTypes, "SwordId", "SwordId", product.SwordId);
+            ViewData["SwordId"] = new SelectList(_context.SwordTypes, "SwordId", "SwordType1", product.SwordId);
             return View(product);
         }
 
@@ -103,7 +186,7 @@ namespace StoreFront.UI.MVC.Controllers
             ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyName", product.CompanyId);
             ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", "GenreName", product.GenreId);
             ViewData["ProductStatusId"] = new SelectList(_context.ProductStatuses, "ProductStatusId", "StatusDescription", product.ProductStatusId);
-            ViewData["SwordId"] = new SelectList(_context.SwordTypes, "SwordId", "SwordId", product.SwordId);
+            ViewData["SwordId"] = new SelectList(_context.SwordTypes, "SwordId", "SwordType1", product.SwordId);
             return View(product);
         }
 
@@ -112,7 +195,7 @@ namespace StoreFront.UI.MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId,ProductPrice,IsFeatured")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId,ProductPrice,IsFeatured,Image")] Product product)
         {
             if (id != product.ProductId)
             {
@@ -121,6 +204,56 @@ namespace StoreFront.UI.MVC.Controllers
 
             if (ModelState.IsValid)
             {
+
+                #region File Upload - EDIT
+
+                //Retain the old image file name so we can delete it if a new file was uploaded
+                string oldImageName = product.ProductImage;
+
+                //Check to see if the user uploaded a file
+                if (product.Image != null)
+                {
+                    //Get the file extension
+                    string ext = Path.GetExtension(product.Image.FileName);
+
+                    //Create a list of valid exts
+                    string[] validExts = { ".jpeg", ".jpg", ".png", ".gif" };
+
+                    //Check to ensure the ext is good and the image isn't too big
+                    if (validExts.Contains(ext.ToLower()) && product.Image.Length < 4_194_303)
+                    {
+                        //Generate a unique file name
+                        product.ProductImage = Guid.NewGuid() + ext;
+
+                        //Build our file path to save the image
+                        string webRootPath = _webHostEnvironment.WebRootPath;
+                        string fullPath = webRootPath + "/img/";
+
+                        //Delete the old image 
+                        if (oldImageName != "noimage.png")
+                        {
+                            ImageUtility.Delete(fullPath, oldImageName);
+                        }
+
+                        //Save the new image
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await product.Image.CopyToAsync(memoryStream);
+
+                            using (var img = Image.FromStream(memoryStream))
+                            {
+                                int maxImageSize = 500;
+                                int maxThumbSize = 100;
+
+                                ImageUtility.ResizeImage(fullPath, product.ProductImage, img, maxImageSize, maxThumbSize);
+                            }
+                        }
+
+                    }
+                }
+
+                #endregion
+
                 try
                 {
                     _context.Update(product);
@@ -143,7 +276,7 @@ namespace StoreFront.UI.MVC.Controllers
             ViewData["CompanyId"] = new SelectList(_context.Companies, "CompanyId", "CompanyName", product.CompanyId);
             ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", "GenreName", product.GenreId);
             ViewData["ProductStatusId"] = new SelectList(_context.ProductStatuses, "ProductStatusId", "StatusDescription", product.ProductStatusId);
-            ViewData["SwordId"] = new SelectList(_context.SwordTypes, "SwordId", "SwordId", product.SwordId);
+            ViewData["SwordId"] = new SelectList(_context.SwordTypes, "SwordId", "SwordType1", product.SwordId);
             return View(product);
         }
 

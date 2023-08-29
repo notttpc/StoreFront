@@ -2,4 +2,7 @@ select.form-control {
     appearance: auto;
 }
   
+.form-control {
+    font-weight: bold;
+}
 

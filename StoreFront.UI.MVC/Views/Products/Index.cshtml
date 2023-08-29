@@ -1,4 +1,5 @@
-﻿@model IEnumerable<StoreFront.DATA.EF.Models.Product>
+﻿@using StoreFront.DATA.EF.Models
+@model IEnumerable<StoreFront.DATA.EF.Models.Product>
 
 @{
     ViewData["Title"] = "Shop Products";
@@ -74,28 +75,36 @@
             <div class="row">
                 <!-- SHOP SIDEBAR-->
                 <div class="col-lg-3 order-2 order-lg-1">
+                    @*<h5 class="text-uppercase mb-4">Categories</h5>
+                    @foreach (Category item in ViewBag.Categories)
+                    {
+                        <div class="py-2 px-4 bg-dark text-white mb-3"><strong class="small text-uppercase fw-bold">@item.CategoryName</strong></div>
+                        <ul class="list-unstyled small text-muted ps-lg-4 font-weight-normal">
+                            <li class="mb-2"><a class="reset-anchor" href=""></a>@item.CategoryId</li>
+                            @*<li class="mb-2"><a class="reset-anchor" href="#!">Shirts</a></li>
+                        <li class="mb-2"><a class="reset-anchor" href="#!">Hats</a></li>
+                        <li class="mb-2"><a class="reset-anchor" href="#!">Shoes</a></li>
+                        <li class="mb-2"><a class="reset-anchor" href="#!">Women's sunglasses</a></li>
+                        <li class="mb-2"><a class="reset-anchor" href="#!">Men's sunglasses</a></li>
+                        </ul>
+                    }*@
                     <h5 class="text-uppercase mb-4">Categories</h5>
-                    <div class="py-2 px-4 bg-dark text-white mb-3"><strong class="small text-uppercase fw-bold">Clothes</strong></div>
+                    <div class="py-2 px-4 bg-light mb-3"><strong><a class="reset-anchor small text-uppercase fw-bold" href="#!">Clothes</a></strong></div>
                     <ul class="list-unstyled small text-muted ps-lg-4 font-weight-normal">
-                        <li class="mb-2"><a class="reset-anchor" href="#!">All Clothes</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Shirts</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Hats</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Shoes</a></li>
-                        @*<li class="mb-2"><a class="reset-anchor" href="#!">Women's sunglasses</a></li>
-                        <li class="mb-2"><a class="reset-anchor" href="#!">Men's sunglasses</a></li>*@
                     </ul>
-                    <div class="py-2 px-4 bg-light mb-3"><strong class="small text-uppercase fw-bold">Swords</strong></div>
+                    <div class="py-2 px-4 bg-light mb-3"><strong><a class="reset-anchor small text-uppercase fw-bold" href="#!">Swords</a></strong></div>
                     <ul class="list-unstyled small text-muted ps-lg-4 font-weight-normal">
-                        <li class="mb-2"><a class="reset-anchor" href="#!">All Swords</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Nichirin</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Katana</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Sabre</a></li>
                         @*<li class="mb-2"><a class="reset-anchor" href="#!">Skin Masks &amp; Peels</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Korean cosmetics</a></li>*@
                     </ul>
-                    <div class="py-2 px-4 bg-light mb-3"><strong class="small text-uppercase fw-bold">Manga Genre</strong></div>
+                    <div class="py-2 px-4 bg-light mb-3"><strong><a class="reset-anchor small text-uppercase fw-bold" href="#!">Manga Genre</a></strong></div>
                     <ul class="list-unstyled small text-muted ps-lg-4 font-weight-normal mb-5">
-                        <li class="mb-2"><a class="reset-anchor" href="#!">All Genres</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Slice of Life</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Action/Adventure</a></li>
                         <li class="mb-2"><a class="reset-anchor" href="#!">Thriller</a></li>
@@ -181,7 +190,7 @@
                             <div class="col-lg-4 col-sm-6">
                                 <div class="product text-center">
                                     <div class="mb-3 position-relative">
-                                        <div class="badge text-white bg-"></div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="~/img/No_Image_Available.jpg" alt="@item.ProductName"></a>
+                                        <div class="badge text-white bg-"></div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="~/img/@item.ProductImage" alt="@item.ProductName"></a>
                                         <div class="product-overlay">
                                             <ul class="mb-0 list-inline">
                                                 <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#!"><i class="far fa-heart"></i></a></li>

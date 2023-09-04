@@ -79,21 +79,21 @@ namespace StoreFront.DATA.EF.Models//.Metadata
 
         [Required(ErrorMessage = "Ship To Customer is required")]
         [StringLength(100, ErrorMessage = "*Must be 100 characters or less")]
-        [Display(Name = "Ship To Customer")]
+        [Display(Name = "Customer")]
         public string ShipToName { get; set; } = null!;
 
         [Required(ErrorMessage = "Ship To City is required")]
         [StringLength(50, ErrorMessage = "*Must be 50 characters or less")]
-        [Display(Name = "Ship To City")]
+        [Display(Name = "City")]
         public string ShipCity { get; set; } = null!;
 
         [StringLength(2, ErrorMessage = "*Must be 2 characters or less")]
-        [Display(Name = "Ship To State")]
+        [Display(Name = "State")]
         public string? ShipState { get; set; }
 
         [Required(ErrorMessage = "Ship To Zip is required")]
         [StringLength(5, ErrorMessage = "*Must be 5 characters or less")]
-        [Display(Name = "Ship To Zip")]
+        [Display(Name = "Zip")]
         [DataType(DataType.PostalCode)]
         public string ShipZip { get; set; } = null!;
     }

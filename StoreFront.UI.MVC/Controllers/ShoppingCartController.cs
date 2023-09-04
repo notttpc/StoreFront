@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StoreFront.DATA.EF.Models;
@@ -9,35 +10,6 @@ namespace StoreFront.UI.MVC.Controllers
 
     public class ShoppingCartController : Controller
     {
-        #region Steps to Implement Session Based Shopping Cart
-        /*
-         * 1) Register Session in program.cs (builder.Services.AddSession... && app.UseSession())
-         * 2) Create the CartItemViewModel class in [ProjName].UI.MVC/Models folder
-         * 3) Add the 'Add To Cart' button in the Index and/or Details view of your Products
-         * 4) Create the ShoppingCartController (empty controller -> named ShoppingCartController)
-         *      - add using statements
-         *          - using GadgetStore.DATA.EF.Models;
-         *          - using Microsoft.AspNetCore.Identity;
-         *          - using GadgetStore.UI.MVC.Models;
-         *          - using Newtonsoft.Json;
-         *      - Add props for the GadgetStoreContext && UserManager
-         *      - Create a constructor for the controller - assign values to context && usermanager
-         *      - Code the AddToCart() action
-         *      - Code the Index() action
-         *      - Code the Index View
-         *          - Start with the basic table structure
-         *          - Show the items that are easily accessible (like the properties from the model)
-         *          - Calculate/show the lineTotal
-         *          - Add the RemoveFromCart <a>
-         *      - Code the RemoveFromCart() action
-         *          - verify the button for RemoveFromCart in the Index view is coded with the controller/action/id
-         *      - Add UpdateCart <form> to the Index View
-         *      - Code the UpdateCart() action
-         *      - Add Submit Order button to Index View
-         *      - Code SubmitOrder() action
-         * */
-        #endregion
-
         //fields
         private readonly AnimeShopContext _context;
         private readonly UserManager<IdentityUser> _userManager;
@@ -82,7 +54,7 @@ namespace StoreFront.UI.MVC.Controllers
 
         public IActionResult AddToCart(int id)
         {
-            //EMpty shell to hold LOCAL shopping cart items
+            //Empty shell to hold LOCAL shopping cart items
             //Key -> int for ProductId
             //Value -> CartItemViewModel -> Product & Qty
             Dictionary<int, CartItemViewModel> shoppingCart;
@@ -124,6 +96,138 @@ namespace StoreFront.UI.MVC.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult RemoveFromCart(int id)
+        {
+            if (id == null)
+            {
+                ViewBag.Message = "ERROR";
+                return RedirectToAction("Index");
+            }
+            //var shoppingCart = GetCart();
+            //The long way:
+            var sessionCart = HttpContext.Session.GetString("cart");
+
+            var shoppingCart = JsonConvert.DeserializeObject<Dictionary<int, CartItemViewModel>>(sessionCart);
+
+            //remove the cart item:
+            shoppingCart.Remove(id);
+
+            //if there are no more cart items, remove the cart from session.
+
+            if (shoppingCart.Count == 0)
+            {
+                HttpContext.Session.Remove("cart");
+            }
+            else
+            {
+                //update the session variable
+                //SetCart(shoppingCart)
+                string jsonCart = JsonConvert.SerializeObject(shoppingCart);
+                HttpContext.Session.SetString("cart", jsonCart);
+            }
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult UpdateCart(int productId, int qty)
+        {
+            if (qty <= 0)
+            {
+                RemoveFromCart(productId);
+            }
+            else
+            {
+
+                var sessionCart = HttpContext.Session.GetString("cart");
+                var shoppingCart = JsonConvert.DeserializeObject<Dictionary<int, CartItemViewModel>>(sessionCart);
+
+                shoppingCart[productId].Qty = qty;
+
+                string jsonCart = JsonConvert.SerializeObject(shoppingCart);
+                HttpContext.Session.SetString("cart", jsonCart);
+            }
+            return RedirectToAction("Index");
+        }
+        [Authorize]
+        public async Task<IActionResult> CheckoutAsync()
+        {
+            var sessionCart = HttpContext.Session.GetString("cart");
+            var shoppingCart = JsonConvert.DeserializeObject<Dictionary<int, CartItemViewModel>>(sessionCart);
+            ViewBag.Total = shoppingCart.Sum(x => x.Value.Qty * x.Value.Product.ProductPrice).ToString("c");
+            ViewBag.UserId = (await _userManager.GetUserAsync(HttpContext.User)).Id;
+            //ViewBag.CartItem = shoppingCart.ToString($"{ProductPrice}");
+            ViewBag.CartItemPrice = shoppingCart.Sum(x => x.Value.Product.ProductPrice).ToString("c");
+
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SubmitOrder([Bind("OrderId,UserId,OrderDate,ShipToName,ShipCity,ShipState,ShipZip")] Order order)
+        {
+            #region Old Way
+
+            ///* 
+            // * Create an order object and then save to the DB
+            // * - OrderDate will be now
+            // * - UserId will be the current User
+            // * - ShipToName, ShipCity, ShipState, ShipZip --> could be populated from a checkout page, but we're going to pull from the Userdetails page.
+            // * - Add the order to the _context and save.
+            // * 
+            // * Create OrderProducts object for each item in the Cart
+            // * - ProductId -> available from the cart
+            // * - OrderId -> available from the Order Object
+            // * - Qty -> from the cart
+            // * - ProductPrice -> from the cart
+            // * - Add the rocord to the _context and save
+            // */
+            //string? userId = (await _userManager.GetUserAsync(HttpContext.User))?.Id;
+
+            ////Retrieve the UserDetails record associated with that ID
+            //UserDetail? ud = _context.UserDetails.Find(userId);
+
+            ////Create the order object and assign values.
+            //Order o = new()
+            //{
+            //    OrderDate = DateTime.Now,
+            //    UserId = userId,
+            //    ShipCity = ud?.City ?? "Not Given",
+            //    ShipToName = ud?.FullName ?? "Not Given",
+            //    ShipState = ud?.State ?? "NO",
+            //    ShipZip = ud?.Zip ?? "[N/A]"
+            //};
+
+            ////add it to the context
+            //_context.Orders.Add(o);
+            #endregion
+
+            //order.OrderDate = DateTime.Now;
+            //order.UserId = (await _userManager.GetUserAsync(HttpContext.User))?.Id;
+            //TryValidateModel(order);
+            //if (ModelState.IsValid)
+            //{
+            //Create the OrderProducts object
+            if (ModelState.IsValid)
+            {
+
+                var sessionCart = HttpContext.Session.GetString("cart");
+                var shoppingCart = JsonConvert.DeserializeObject<Dictionary<int, CartItemViewModel>>(sessionCart);
+
+                foreach (var item in shoppingCart.Values)
+                {
+                    order.OrderProducts.Add(new()
+                    {
+                        OrderId = order.OrderId,
+                        ProductId = item.Product.ProductId,
+                        ProductPrice = item.Product.ProductPrice,
+                        Quantity = (short)item.Qty
+                    });
+                }
+                _context.Add(order);
+                await _context.SaveChangesAsync();
+                HttpContext.Session.Remove("cart");
+                return RedirectToAction("Index", "Orders");
+            }
+            //}
+            return View("Checkout", order);
+        }
         //public Dictionary<int, CartItemViewModel> GetCart() -> JSON Deserialization here.
         //public void SetCart(Dictioary<int, CartItemViewModel) -> JSON Serialization and Session assignment
     }

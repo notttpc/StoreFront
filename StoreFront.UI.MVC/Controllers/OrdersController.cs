@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,17 +13,27 @@ namespace StoreFront.UI.MVC.Controllers
     public class OrdersController : Controller
     {
         private readonly AnimeShopContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public OrdersController(AnimeShopContext context)
+        public OrdersController(AnimeShopContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var animeShopContext = _context.Orders.Include(o => o.User);
-            return View(await animeShopContext.ToListAsync());
+            string? userId = (await _userManager.GetUserAsync(HttpContext.User))?.Id;
+            var orders = _context.Orders.Include(o => o.User);
+
+            //if the user is not an admin, only show them their own orders.
+            if (!User.IsInRole("Admin"))
+            {
+                return View(await orders.Where(x => x.UserId == userId).ToListAsync());
+            }
+            //otherwise, show them all of the orders.
+            return View(await orders.ToListAsync());
         }
 
         // GET: Orders/Details/5
@@ -150,6 +161,19 @@ namespace StoreFront.UI.MVC.Controllers
                 return Problem("Entity set 'AnimeShopContext.Orders'  is null.");
             }
             var order = await _context.Orders.FindAsync(id);
+
+            #region Delete corresponding OrderProducts
+            ////populate the LOCAL order's order products.
+            //order.OrderProducts = _context.OrderProducts.Where(x => x.OrderId == id).ToList();
+
+            ////remove each local item from the _contexxt
+            //foreach (var item in order.OrderProducts)
+            //{
+
+            //    _context.OrderProducts.Remove(item);
+            //}
+            #endregion
+
             if (order != null)
             {
                 _context.Orders.Remove(order);

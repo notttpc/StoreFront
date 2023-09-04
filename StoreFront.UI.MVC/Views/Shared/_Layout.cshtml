@@ -1,4 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> signInManager
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +17,6 @@
     <link rel="stylesheet" href="~/vendor/nouislider/nouislider.min.css">
     <!-- Choices CSS-->
     <link rel="stylesheet" href="~/vendor/choices.js/public/assets/styles/choices.min.css">
-    <link rel="stylesheet" href="~/vendor/css/custom.css"/>
     <!-- Swiper slider-->
     <link rel="stylesheet" href="~/vendor/swiper/swiper-bundle.min.css">
     <!-- Google fonts-->
@@ -26,6 +28,10 @@
     <link rel="stylesheet" href="~/css/custom.css">
     <!-- Favicon-->
     <link rel="shortcut icon" href="~/img/favicon.png">
+    <!-- Datatable.net-->
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.6/r-2.5.0/datatables.min.css" rel="stylesheet">
+    <!-- PagedList -->
+    <link href="~/css/PagedList.css" rel="stylesheet" />
 </head>
 <body>
     <div class="page-holder">
@@ -43,15 +49,25 @@
                             <li class="nav-item">
                                 <!-- Link--><a class="nav-link" href="@Url.Action("Index", "Products")">Shop</a>
                             </li>
+                            @if (signInManager.IsSignedIn(User))
+                            {
+                                //Above, we check to make sure that someone is logged in if they are to view
+                                //this HTML. *For this to work, we MUST have the using & inject statements at
+                                //the top of this page.*
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-action="Index" asp-controller="Orders">Orders</a>
+                                </li>
+                            }
+
                             @*<li class="nav-item">
-                                <!-- Link--><a class="nav-link" href="@Url.Action("Index", "ProductStatus")">Product detail</a>
+                            <!-- Link--><a class="nav-link" href="@Url.Action("Index", "ProductStatus")">Product detail</a>
                             </li>*@
                             @*<li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
-                                <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown"><a class="dropdown-item border-0 transition-link" href="index.html">Homepage</a><a class="dropdown-item border-0 transition-link" href="shop.html">Category</a><a class="dropdown-item border-0 transition-link" href="detail.html">Product detail</a><a class="dropdown-item border-0 transition-link" href="cart.html">Shopping cart</a><a class="dropdown-item border-0 transition-link" href="checkout.html">Checkout</a></div>
+                            <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                            <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown"><a class="dropdown-item border-0 transition-link" href="index.html">Homepage</a><a class="dropdown-item border-0 transition-link" href="shop.html">Category</a><a class="dropdown-item border-0 transition-link" href="detail.html">Product detail</a><a class="dropdown-item border-0 transition-link" href="cart.html">Shopping cart</a><a class="dropdown-item border-0 transition-link" href="checkout.html">Checkout</a></div>
                             </li>*@
                             @*<li class="nav-item">
-                                <!-- Link--><a class="nav-link" href="@Url.Action("Contact", "Home")">Contact Us</a>
+                            <!-- Link--><a class="nav-link" href="@Url.Action("Contact", "Home")">Contact Us</a>
                             </li>*@
                             @if (User.IsInRole("Admin"))
                             {
@@ -65,7 +81,7 @@
                         </ul>
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "ShoppingCart")"> <i class="fas fa-dolly-flatbed me-1 text-gray"></i>Cart<small class="text-gray fw-normal">(Qty)</small></a></li>
-                            <li class="nav-item"><a class="nav-link" href="#!"> <i class="far fa-heart me-1"></i><small class="text-gray fw-normal"> (0)</small></a></li>
+                            @*<li class="nav-item"><a class="nav-link" href="#!"> <i class="far fa-heart me-1"></i><small class="text-gray fw-normal"> (0)</small></a></li>*@
                             @*<li class="nav-item"><a class="nav-link" href="#!"> <i class="fas fa-user me-1 text-gray fw-normal"></i>Login</a></li>*@
                             <partial name="_LoginPartial" />
                         </ul>
@@ -84,19 +100,19 @@
                     <div class="col-md-4 mb-3 mb-md-0">
                         <h6 class="text-uppercase mb-3">Customer services</h6>
                         <ul class="list-unstyled mb-0">
-                            <li><a class="footer-link" href="#!">Help &amp; Contact Us</a></li>
-                            <li><a class="footer-link" href="#!">Returns &amp; Refunds</a></li>
-                            <li><a class="footer-link" href="#!">Online Stores</a></li>
-                            <li><a class="footer-link" href="#!">Terms &amp; Conditions</a></li>
+                            <li><a class="footer-link" disabled="disabled" >Help &amp; Contact Us</a></li>
+                            <li><a class="footer-link" disabled="disabled" >Returns &amp; Refunds</a></li>
+                            <li><a class="footer-link" disabled="disabled" >Online Stores</a></li>
+                            <li><a class="footer-link" disabled="disabled" >Terms &amp; Conditions</a></li>
                         </ul>
                     </div>
                     <div class="col-md-4 mb-3 mb-md-0">
                         <h6 class="text-uppercase mb-3">Company</h6>
                         <ul class="list-unstyled mb-0">
-                            <li><a class="footer-link" href="#!">What We Do</a></li>
-                            <li><a class="footer-link" href="#!">Available Services</a></li>
-                            <li><a class="footer-link" href="#!">Latest Posts</a></li>
-                            <li><a class="footer-link" href="#!">FAQs</a></li>
+                            <li><a class="footer-link" disabled="disabled">Available Services</a></li>
+                            <li><a class="footer-link" disabled="disabled">Latest Posts</a></li>
+                            <li><a class="footer-link" disabled="disabled">FAQs</a></li>
+                            <li><a class="footer-link" disabled="disabled">What We Do</a></li>
                         </ul>
                     </div>
                     <div class="col-md-4">
@@ -131,6 +147,10 @@
         <script src="~/vendor/choices.js/public/assets/scripts/choices.min.js"></script>
         <script src="~/js/front.js"></script>
         <script src="~/jquery/dist/jquery.min.js"></script>
+        <!-- databtables.net-->
+        <script src="https://cdn.datatables.net/v/bs5/dt-1.13.6/r-2.5.0/datatables.min.js"></script>
+        <!-- custom js -->
+        <script src="~/js/custom.js"></script>
         <script>
             // ------------------------------------------------------- //
             //   Inject SVG Sprite -

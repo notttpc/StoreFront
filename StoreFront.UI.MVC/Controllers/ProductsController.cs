@@ -10,6 +10,7 @@ using StoreFront.DATA.EF.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Drawing;
 using GadgetStore.UI.MVC.Utilities;
+using X.PagedList;
 
 namespace StoreFront.UI.MVC.Controllers
 {
@@ -28,11 +29,53 @@ namespace StoreFront.UI.MVC.Controllers
 
         // GET: Products
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm, int categoryId = 0, int page = 1, int swordTypeId = 0, int genreId = 0)
         {
-            var animeShopContext = _context.Products.Include(p => p.Category).Include(p => p.Company).Include(p => p.Genre).Include(p => p.ProductStatus).Include(p => p.Sword);
+            var products = _context.Products.Include(p => p.Category).Include(p => p.Company).Include(p => p.Genre).Include(p => p.ProductStatus).Include(p => p.Sword).ToList();
             ViewBag.Categories = _context.Categories.ToList();
-            return View(await animeShopContext.ToListAsync());
+
+            #region Optional Category Filter
+            ViewBag.CategoryId = new SelectList(_context.Categories, "CategoryId", "CategoryName", categoryId);
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.Category = 0;//added to persist category during pagination
+
+            if (swordTypeId != 0)
+            {
+                products = products.Where(p => p.SwordId == swordTypeId).ToList();
+                ViewBag.SwordType = swordTypeId;
+                ViewBag.NbrResults = products.Count;
+                ViewBag.SearchTerm = searchTerm;
+            }
+
+            if (genreId != 0)
+            {
+                products = products.Where(p => p.GenreId == genreId).ToList();
+                ViewBag.Genre = genreId;
+                ViewBag.NbrResults = products.Count;
+                ViewBag.SearchTerm = searchTerm;
+            }
+
+            if (categoryId != 0)
+            {
+                products = products.Where(p => p.CategoryId == categoryId).ToList();
+                ViewBag.Category = categoryId;
+                ViewBag.NbrResults = products.Count;
+                ViewBag.SearchTerm = searchTerm;
+            }
+            #endregion
+
+            #region Optional Search Filter
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                products = products.Where(p =>
+                p.ProductName.ToLower().Contains(searchTerm.ToLower())
+                || p.Category.CategoryName.ToLower().Contains(searchTerm.ToLower())
+                || p.ProductDescription.ToLower().Contains(searchTerm.ToLower())).ToList();
+                
+            }
+            #endregion
+
+            return View(products.ToPagedList(page, 6));
         }
 
 
@@ -58,11 +101,13 @@ namespace StoreFront.UI.MVC.Controllers
                 .Include(p => p.ProductStatus)
                 .Include(p => p.Sword)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
+
             if (product == null)
             {
                 return NotFound();
             }
 
+            ViewBag.Products = _context.Products.Where(c => c.CategoryId == product.CategoryId).ToList();
             return View(product);
         }
 

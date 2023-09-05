@@ -38,7 +38,7 @@
         <!-- navbar-->
         <header class="header bg-light">
             <div class="container px-lg-3">
-                <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0">
+                <nav class="navbar navbar-expand-lg justify-content-between navbar-light py-3 px-lg-0">
                     <a class="navbar-brand" href="@Url.Action("Index", "Home")"><span class="fw-bold text-uppercase text-dark">Anime Shop</span></a>
                     <button class="navbar-toggler navbar-toggler-end" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -74,7 +74,16 @@
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
                                     <div class="dropdown-menu mt-3 shadow-sm" aria-labelledby="pagesDropdown">
-                                        <a class="dropdown-item border-0 transition-link" href="@Url.Action("ListRoles", "Administration")">Roles</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("ListUsers", "Administration")">Users</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("Index", "Companies")">Companies</a><a class="dropdown-item border-0 transition-link" href="@Url.Action("Index", "Categories")">Categories</a>
+                                        <a class="dropdown-item border-0 transition-link" 
+                                        href="@Url.Action("ListRoles", "Administration")">Roles</a>
+                                        <a class="dropdown-item border-0 transition-link" 
+                                        href="@Url.Action("ListUsers", "Administration")">Users</a>
+                                        <a class="dropdown-item border-0 transition-link" 
+                                        href="@Url.Action("Index", "Companies")">Companies</a>
+                                        <a class="dropdown-item border-0 transition-link" 
+                                        href="@Url.Action("Index", "Categories")">Categories</a>
+                                        <a class="dropdown-item border-0 transition-link" 
+                                        href="@Url.Action("AdminView", "Products")">Products</a>
                                     </div>
                                 </li>
                             }
@@ -100,10 +109,10 @@
                     <div class="col-md-4 mb-3 mb-md-0">
                         <h6 class="text-uppercase mb-3">Customer services</h6>
                         <ul class="list-unstyled mb-0">
-                            <li><a class="footer-link" disabled="disabled" >Help &amp; Contact Us</a></li>
-                            <li><a class="footer-link" disabled="disabled" >Returns &amp; Refunds</a></li>
-                            <li><a class="footer-link" disabled="disabled" >Online Stores</a></li>
-                            <li><a class="footer-link" disabled="disabled" >Terms &amp; Conditions</a></li>
+                            <li><a class="footer-link" disabled="disabled">Help &amp; Contact Us</a></li>
+                            <li><a class="footer-link" disabled="disabled">Returns &amp; Refunds</a></li>
+                            <li><a class="footer-link" disabled="disabled">Online Stores</a></li>
+                            <li><a class="footer-link" disabled="disabled">Terms &amp; Conditions</a></li>
                         </ul>
                     </div>
                     <div class="col-md-4 mb-3 mb-md-0">

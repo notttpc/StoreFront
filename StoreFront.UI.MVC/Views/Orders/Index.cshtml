@@ -30,8 +30,9 @@
         </div>
     </section>
 
+    <section class="col-md-8 offset-2">
 
-    <table class="table">
+    <table class="table-striped table-hover table mt-5 mb-5 shadow rounded">
         <thead>
             <tr>
                 <th>
@@ -77,18 +78,17 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.User.UserId)
                     </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.OrderId">Details</a>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            @Html.Raw("|")
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>
                             <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>
                             @Html.Raw("|")
                             <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
-                        }
-                    </td>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
+    </section>
 </div>

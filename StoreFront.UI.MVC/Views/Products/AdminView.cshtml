@@ -4,98 +4,118 @@
     ViewData["Title"] = "Admin View Products";
 }
 
-@*<h1>Index</h1>*@
+<div class="container">
+    <!-- HERO SECTION-->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="h2 text-uppercase mb-0">Admin Products</h1>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-lg-end mb-0 px-0 bg-light">
+                            <li class="breadcrumb-item"><a class="text-dark" href="@Url.Action("Index", "Home")">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Cart</li>
+                        </ol>
+                    </nav>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <ul class="navbar-nav">
+                            <a asp-action="Create">Create New Product</a>
+                            <a asp-action="Index">Back to Tiles</a>
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
 
-<section class="product_section layout_padding gray-section pb-4 pt-4 mb-4">
-    <div class="heading_container heading_center">
-        <h2 class="text-center">
-            Admin <span>Products</span>
-        </h2>
-        <p align="center">
-            <a asp-action="Create">Create New Product |</a>
-            <a asp-action="Index">Back to Tiles</a>
-        </p>
-    </div>
-</section>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsFeatured)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Company)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sword)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.ProductId" asp-route-prevAction="Index">
-                    @Html.DisplayFor(modelItem => item.ProductName)
-                    </a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductDescription)
-                </td>
-                <td>
-                    <img src="~/img/t_@item.ProductImage" class="img-fluid" alt="@item.ProductName" longdesc="@item.ProductDescription" />
-                    @*@Html.DisplayFor(modelItem => item.ProductImage)*@
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsFeatured)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category.CategoryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Company.CompanyName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Genre.GenreName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProductStatus.StatusDescription)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Sword.SwordType1)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+    <section>
+        <table class="table-striped table-hover table mt-5 mb-5 shadow rounded">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductDescription)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductImage)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsFeatured)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Category)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Company)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Genre)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProductStatus)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Sword)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.ProductId" asp-route-prevAction="Index">
+                                @Html.DisplayFor(modelItem => item.ProductName)
+                            </a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProductDescription)
+                        </td>
+                        <td>
+                            <img src="~/img/t_@item.ProductImage" class="img-fluid" alt="@item.ProductName" longdesc="@item.ProductDescription" />
+                            @*@Html.DisplayFor(modelItem => item.ProductImage)*@
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProductPrice)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsFeatured)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Company.CompanyName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Genre.GenreName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProductStatus.StatusDescription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Sword.SwordType1)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                            <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </section>
+</div>
+

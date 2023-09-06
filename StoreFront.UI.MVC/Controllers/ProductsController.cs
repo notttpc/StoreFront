@@ -112,6 +112,7 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Products/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
@@ -125,6 +126,7 @@ namespace StoreFront.UI.MVC.Controllers
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId,ProductPrice,IsFeatured,Image")] Product product)
@@ -215,6 +217,7 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Products == null)
@@ -238,6 +241,7 @@ namespace StoreFront.UI.MVC.Controllers
         // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,ProductImage,CategoryId,ProductStatusId,CompanyId,SwordId,GenreId,ProductPrice,IsFeatured,Image")] Product product)
@@ -326,6 +330,7 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Products == null)
@@ -349,6 +354,7 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // POST: Products/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

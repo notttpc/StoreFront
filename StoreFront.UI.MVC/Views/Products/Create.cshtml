@@ -3,18 +3,17 @@
 @{
     ViewData["Title"] = "Create";
 }
-<hr />
-<section class="product_section layout_padding gray-section pb-4 pt-4 mb-4">
-    <div class="heading_container heading_center">
-        <h1 class="text-center">
-            Create <span>Products</span>
-        </h1>
-    </div>
-</section>
+<div class="row mb-5 text-center">
+    <section class="product_section layout_padding gray-section pb-4 pt-4 mb-4">
+        <div class="heading_container heading_center">
+            <h1 class="text-center">
+                Create <span>Products</span>
+            </h1>
+        </div>
+    </section>
 
-<div class="row mb-3">
-    <section class="shadow col-md-8 offset-md-2">
-        <div class="col-md-4 offset-md-4">
+    <section class="shadow rounded col-md-4 offset-4 p-5">
+        <div>
             <form asp-action="Create" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -68,14 +67,14 @@
                     <span asp-validation-for="ProductImage" class="text-danger"></span>
                 </div>
 
-                <label class="form-check-label d-block text-center ">
+                <label class="form-check-label d-block text-center mt-4">
                     @Html.DisplayNameFor(model => model.IsFeatured) <br />
                     <input asp-for="IsFeatured" />
                 </label>
 
 
                 <div class="form-floating">
-                    <input type="submit" value="Create Product" class="btn btn-primary mb-3 text-center w-100 d-inline-block" />
+                    <input type="submit" value="Create Product" class="btn btn-primary mb-3 text-center w-100 d-inline-block mt-3" />
                     <a asp-action="AdminView" class="btn btn-secondary text-center w-100 d-inline-block mb-3">Back to Products List</a>
                     <a asp-action="Index" class="btn btn-secondary text-center w-100 d-inline-block mb-3">Back to Products Tile</a>
                 </div>

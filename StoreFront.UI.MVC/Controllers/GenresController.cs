@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,7 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Genres/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -67,6 +69,7 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Genres/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Genres == null)
@@ -85,6 +88,7 @@ namespace StoreFront.UI.MVC.Controllers
         // POST: Genres/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GenreId,GenreName")] Genre genre)
@@ -118,6 +122,7 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // GET: Genres/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Genres == null)
@@ -136,6 +141,7 @@ namespace StoreFront.UI.MVC.Controllers
         }
 
         // POST: Genres/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -58,6 +58,9 @@
                                     <a class="nav-link" asp-action="Index" asp-controller="Orders">Orders</a>
                                 </li>
                             }
+                            <li class="nav-item">
+                                <!-- Link--><a class="nav-link" href="@Url.Action("Contact", "Home")">Contact us</a>
+                            </li>
 
                             @*<li class="nav-item">
                             <!-- Link--><a class="nav-link" href="@Url.Action("Index", "ProductStatus")">Product detail</a>
@@ -113,7 +116,7 @@
                     <div class="col-md-4 mb-3 mb-md-0">
                         <h6 class="text-uppercase mb-3">Customer services</h6>
                         <ul class="list-unstyled mb-0">
-                            <li><a class="footer-link" disabled="disabled">Help &amp; Contact Us</a></li>
+                            <li><a class="footer-link" href="@Url.Action("Contact", "Home")">Help &amp; Contact Us</a></li>
                             <li><a class="footer-link" disabled="disabled">Returns &amp; Refunds</a></li>
                             <li><a class="footer-link" disabled="disabled">Online Stores</a></li>
                             <li><a class="footer-link" disabled="disabled">Terms &amp; Conditions</a></li>

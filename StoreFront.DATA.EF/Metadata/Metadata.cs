@@ -47,6 +47,7 @@ namespace StoreFront.DATA.EF.Models//.Metadata
 
         [StringLength(24, ErrorMessage = "*Must be 24 chracters or less")]
         [DataType(DataType.PhoneNumber)]
+        [Display(Name = "Phone #")]
         public string? Phone { get; set; }
     }
     #endregion

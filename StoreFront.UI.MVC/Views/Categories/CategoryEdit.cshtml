@@ -1,0 +1,25 @@
+﻿@model StoreFront.DATA.EF.Models.Category
+
+<td colspan="4">
+    <form asp-action="AjaxEdit" method="post" id="CategoryEditForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input type="hidden" asp-for="CategoryId" />
+        @*<label asp-for="CategoryName" class="control-label"></label>*@
+        <input asp-for="CategoryName" class="form-control" placeholder="Name..." />
+        <span asp-validation-for="CategoryName" class="text-danger"></span>
+        @*<label asp-for="CategoryDescription" class="control-label"></label>*@
+        <textarea asp-for="CategoryDescription" class="form-control" placeholder="Description..."></textarea>
+        <span asp-validation-for="CategoryDescription" class="text-danger"></span>
+        <div class="mt-1 text-center">
+        <input type="submit" value="Save" class="btn btn-primary" id="saveUpdate" />
+        </div>
+
+    </form>
+</td>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

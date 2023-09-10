@@ -1,59 +1,243 @@
 ﻿@model IEnumerable<StoreFront.DATA.EF.Models.Company>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Companies";
 }
 
-<h1>Index</h1>
+<div class="modal fade" id="CompanyDetails" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+            </div>
+            <div id="DetailsBody" class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.State)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CompanyName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.State)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CompanyId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CompanyId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CompanyId">Delete</a>
-            </td>
-        </tr>
+<div class="container">
+    <!-- HERO SECTION-->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="h2 text-uppercase mb-0">Companies</h1>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-lg-end mb-0 px-0 bg-light">
+                            <li class="breadcrumb-item"><a class="text-dark" href="@Url.Action("Index", "Home")">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Companies</li>
+                        </ol>
+                    </nav>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <ul class="navbar-nav">
+                            <li class="nav-item "><a class="nav-link" href="#ToggleCompanyCreate" id="ToggleCompanyCreate">Add New Company</a></li>
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="CompanyCreate" class="mx-auto mt-5">
+        <partial name="CompanyCreate" model="new StoreFront.DATA.EF.Models.Company()" />
+    </div>
+
+    <div class="row">
+        <div class="mx-auto col-md-6 mt-5">
+            <div id="MessageContent" class="text-center"></div>
+        </div>
+    </div>
+
+    <section class="col-md-10 offset-1">
+        <table class="table-striped table-hover table mt-5 mb-5 shadow rounded" id="CompaniesTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CompanyName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.State)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.City)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Address)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Phone)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="Company-@item.CompanyId">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompanyName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.State)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.City)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Phone)
+                        </td>
+                        <td>
+                            <a href="" id="@item.CompanyId" class="EditLink">Edit</a> |
+
+                            <a href="#CompanyDetails" class="DetailsLink" id="@item.CompanyId" data-bs-toggle="modal">Details</a> |
+
+                            @if (ViewBag.Companies.Contains(item.CompanyId))
+                            {
+                                <a disabled="disabled" class="text-black">In Use</a>
+                            }
+                            else
+                            {
+                                <a asp-action="AjaxDelete" asp-route-id="@item.CompanyId"
+                                   data-ajax="true"
+                                   data-ajax-confirm="Are you sure you want to delete @item.CompanyName?"
+                                   data-ajax-failure="deleteFailed"
+                                   data-ajax-success="deleteConfirmed"
+                                   data-ajax-method="POST"
+                                   class="text-danger">
+                                    Delete
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </section>
+</div>
+
+
+@section scripts
+    {
+    <script>
+        //#region AJAX Delete
+            function deleteConfirmed(response, status, data) {
+                let rowId = "#Company-" + response.id; //response is sent from the JsonResult in the controller.
+                console.log(rowId);
+                $("#CompaniesTable").find(rowId).remove();
+
+                //display the status message
+                $("#MessageContent").removeClass().addClass('alert alert-success').text(response.message);
+            }
+
+            function deleteFailed(response, status, data) {
+                $("#MessageContent").removeClass().addClass('alert alert-danger').text('Delete unsuccessful.');
+
+            }
+        //#endregion
+
+        //#region AJAX Details
+            $(".DetailsLink").on("click", function (e) {
+                let id = $(this).attr("id");
+                $('#CompanyDetails .modal-body').load("/Companies/CompanyDetails/" + id);
+            });
+        //#endregion
+
+        //#region AJAX Create
+            $("#CompanyCreate").hide();//hide when the page loads.
+            $("#ToggleCompanyCreate").on("click", function () {
+                $("#CompanyCreate").toggle();
+            });
+
+            $("#CompanyCreateForm").on("submit", function (e) {
+                e.preventDefault();//stops the screen from reloading.
+                let formData = $(this).serializeArray();
+                console.log(formData);
+
+                $.ajax({
+                    url: "/Companies/AjaxCreate",
+                    type: "POST",
+                    data: formData,
+                    dataType: "json",
+                    success: function (data) {
+                        $("#MessageContent").removeClass().addClass("alert alert-success").text("Your record was successfully added");
+                        $("#CompanyCreateForm")[0].reset();
+                        $(function () {
+                            let row = '<tr><td>' + data.companyName +
+                                '</td><td>' + data.state +
+                                '</td><td>' + data.city +
+                                '</td><td>' + data.address +
+                                '</td><td>' + data.phone +
+                                '</td><td>Refresh to view options</td></tr>';
+                            $("#CompaniesTable").append(row);
+                            $("#CompanyCreate").hide();
+                        })
+                    },
+                    error: function (e) {
+                        $("#MessageContent").removeClass().addClass('alert alert-warning').text("There was an error. Please try again, or contact the site administrator");
+                    }
+                });
+            });
+        //#endregion
+
+        //#region AJAX Edit
+            let originalContent = null;
+            $(".EditLink").on("click", function (e) {
+                e.preventDefault();
+                let companyId = $(this).attr("id");
+                let row = $("#Company-" + companyId).children();
+                originalContent = {
+                    ComId: companyId,
+                    ComName: row[0].innerText,
+                    ComState: row[1].innerText,
+                    ComCity: row[2].innerText,
+                    ComAddress: row[3].innerText,
+                    ComPhone: row[4].innerText
+                };
+                //console.log(originalContent);
+                $.get("/Companies/CompanyEdit/" + companyId, function (data) {
+                    $("#Company-" + companyId).replaceWith("<tr id='Company-" + companyId + "'>" + data + "</tr>")
+                });
+            });
+
+            $(document).on("click", "#saveUpdate", function (e) {
+                e.preventDefault();
+                let formData = $("#CompanyEditForm").serializeArray();
+                console.log(formData);
+
+                $.ajax({
+                    url: "/Companies/AjaxEdit",
+                    type: "POST",
+                    data: formData,
+                    dataType: "json",
+                    success: function (data) {
+                        $("#MessageContent").removeClass().addClass('alert alert-success').text("Your record was successfully updated!");
+                        $('#CompanyEditForm')[0].reset();
+
+                        $(function () {
+                            let row = '<tr><td>' + data.companyName +
+                                '</td><td>' + data.state +
+                                '</td><td>' + data.city +
+                                '</td><td>' + data.address +
+                                '</td><td>' + data.phone +
+                                '</td><td>Refresh to view options</td></tr>';
+                            $("#Company-" + data.companyId).replaceWith(row);
+                        })
+                    },
+                    error: function (e) {
+                        $("#MessageContent").removeClass().addClass('alert alert-danger').text("There was an error. Please try again or contact the site admin.");
+                    }
+                });
+            });
+        //#endregion
+    </script>
 }
-    </tbody>
-</table>

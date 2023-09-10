@@ -1,0 +1,23 @@
+﻿@model StoreFront.DATA.EF.Models.SwordType
+
+<div class="row">
+    <div class="col-md-4 mx-auto pt-3 shadow rounded p-2">
+        <form asp-action="SwordCreate" id="SwordCreateForm" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @*<label asp-for="SwordType1" class="control-label"></label>*@
+                <input asp-for="SwordType1" class="form-control" placeholder="Sword Name..." />
+                <span asp-validation-for="SwordType1" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-1 text-center">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

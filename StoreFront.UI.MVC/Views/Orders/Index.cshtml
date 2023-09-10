@@ -16,7 +16,7 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-lg-end mb-0 px-0 bg-light">
                             <li class="breadcrumb-item"><a class="text-dark" href="@Url.Action("Index", "Home")">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Cart</li>
+                            <li class="breadcrumb-item active" aria-current="page">Orders</li>
                         </ol>
                     </nav>
                     @if (User.IsInRole("Admin"))
@@ -32,63 +32,63 @@
 
     <section class="col-md-8 offset-2">
 
-    <table class="table-striped table-hover table mt-5 mb-5 shadow rounded">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.OrderDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ShipToName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ShipCity)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ShipState)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ShipZip)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.User)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+        <table class="table-striped table-hover table mt-5 mb-5 shadow rounded">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.OrderDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ShipToName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ShipCity)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ShipState)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ShipZip)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.User.UserId)
-                    </td>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>
-                            @Html.Raw("|")
-                            <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
-                        </td>
-                    }
+                    <th>
+                        @Html.DisplayNameFor(model => model.OrderDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ShipToName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ShipCity)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ShipState)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ShipZip)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.User)
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.OrderDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ShipToName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ShipCity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ShipState)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ShipZip)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.User.UserId)
+                        </td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>
+                                @Html.Raw("|")
+                                <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
     </section>
 </div>

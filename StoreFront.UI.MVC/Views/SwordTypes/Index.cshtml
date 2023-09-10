@@ -1,35 +1,206 @@
 ﻿@model IEnumerable<StoreFront.DATA.EF.Models.SwordType>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Swords";
 }
 
-<h1>Index</h1>
+<div class="modal fade" id="SwordDetails" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+            </div>
+            <div id="DetailsBody" class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SwordType1)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SwordType1)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SwordId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SwordId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SwordId">Delete</a>
-            </td>
-        </tr>
+<div class="container">
+    <!-- HERO SECTION-->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="h2 text-uppercase mb-0">Swords</h1>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-lg-end mb-0 px-0 bg-light">
+                            <li class="breadcrumb-item"><a class="text-dark" href="@Url.Action("Index", "Home")">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Swords</li>
+                        </ol>
+                    </nav>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <ul class="navbar-nav">
+                            <li class="nav-item "><a class="nav-link" href="#ToggleSwordCreate" id="ToggleSwordCreate">Add New Sword</a></li>
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="SwordCreate" class="mx-auto mt-5">
+        <partial name="SwordCreate" model="new StoreFront.DATA.EF.Models.SwordType()" />
+    </div>
+
+    <div class="row">
+        <div class="mx-auto col-md-6 mt-5">
+            <div id="MessageContent" class="text-center"></div>
+        </div>
+    </div>
+
+    <section class="col-md-4 offset-md-4 mx-auto">
+        <table class="table-striped table-hover table mt-5 mb-5 shadow rounded" id="SwordTypesTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SwordType1)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="Sword-@item.SwordId">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SwordType1)
+                        </td>
+                        <td>
+                            <a href="" id="@item.SwordId" class="EditLink">Edit</a> |
+
+                            <a href="#SwordDetails" class="DetailsLink" id="@item.SwordId" data-bs-toggle="modal">Details</a> |
+
+                            @if (ViewBag.Swords.Contains(item.SwordId))
+                            {
+                                <a disabled="disabled" class="text-black">In Use</a>
+                            }
+                            else
+                            {
+                                <a asp-action="AjaxDelete" asp-route-id="@item.SwordId"
+                                   data-ajax="true"
+                                   data-ajax-confirm="Are you sure you want to delete @item.SwordType1?"
+                                   data-ajax-failure="deleteFailed"
+                                   data-ajax-success="deleteConfirmed"
+                                   data-ajax-method="POST"
+                                   class="text-danger">
+                                    Delete
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </section>
+</div>
+
+@section scripts
+    {
+    <script>
+        //#region AJAX Delete
+            function deleteConfirmed(response, status, data) {
+                let rowId = "#Sword-" + response.id; //response is sent from the JsonResult in the controller.
+                console.log(rowId);
+                $("#SwordTypesTable").find(rowId).remove();
+
+                //display the status message
+                $("#MessageContent").removeClass().addClass('alert alert-success').text(response.message);
+            }
+
+            function deleteFailed(response, status, data) {
+                $("#MessageContent").removeClass().addClass('alert alert-danger').text('Delete unsuccessful.');
+
+            }
+        //#endregion
+
+        //#region AJAX Details
+            $(".DetailsLink").on("click", function (e) {
+                let id = $(this).attr("id");
+                $('#SwordDetails .modal-body').load("/SwordTypes/SwordDetails/" + id);
+            });
+        //#endregion
+
+        //#region AJAX Create
+            $("#SwordCreate").hide();//hide when the page loads.
+            $("#ToggleSwordCreate").on("click", function () {
+                $("#SwordCreate").toggle();
+            });
+
+            $("#SwordCreateForm").on("submit", function (e) {
+                e.preventDefault();//stops the screen from reloading.
+                let formData = $(this).serializeArray();
+                console.log(formData);
+
+                $.ajax({
+                    url: "/SwordTypes/AjaxCreate",
+                    type: "POST",
+                    data: formData,
+                    dataType: "json",
+                    success: function (data) {
+                        $("#MessageContent").removeClass().addClass("alert alert-success").text("Your record was successfully added");
+                        $("#SwordCreateForm")[0].reset();
+                        $(function () {
+                            let row = '<tr><td>' + data.swordType1 +
+                                '</td><td>Refresh to view options</td></tr>';
+                            $("#SwordTypesTable").append(row);
+                            $("#SwordCreate").hide();
+                        })
+                    },
+                    error: function (e) {
+                        $("#MessageContent").removeClass().addClass('alert alert-warning').text("There was an error. Please try again, or contact the site administrator");
+                    }
+                });
+            });
+        //#endregion
+
+        //#region AJAX Edit
+            let originalContent = null;
+            $(".EditLink").on("click", function (e) {
+                e.preventDefault();
+                let swordId = $(this).attr("id");
+                let row = $("#Sword-" + swordId).children();
+                originalContent = {
+                    SwoId: swordId,
+                    SwoName: row[0].innerText,
+                };
+                //console.log(originalContent);
+                $.get("/SwordTypes/SwordEdit/" + swordId, function (data) {
+                    $("#Sword-" + swordId).replaceWith("<tr id='Sword-" + swordId + "'>" + data + "</tr>")
+                });
+            });
+
+            $(document).on("click", "#saveUpdate", function (e) {
+                e.preventDefault();
+                let formData = $("#SwordEditForm").serializeArray();
+                console.log(formData);
+
+                $.ajax({
+                    url: "/SwordTypes/AjaxEdit",
+                    type: "POST",
+                    data: formData,
+                    dataType: "json",
+                    success: function (data) {
+                        $("#MessageContent").removeClass().addClass('alert alert-success').text("Your record was successfully updated!");
+                        $('#SwordEditForm')[0].reset();
+
+                        $(function () {
+                            let row = '<tr><td>' + data.swordType1 +
+                                '</td><td>Refresh to view options</td></tr>';
+                            $("#Sword-" + data.swordId).replaceWith(row);
+                        })
+                    },
+                    error: function (e) {
+                        $("#MessageContent").removeClass().addClass('alert alert-danger').text("There was an error. Please try again or contact the site admin.");
+                    }
+                });
+            });
+        //#endregion
+    </script>
 }
-    </tbody>
-</table>

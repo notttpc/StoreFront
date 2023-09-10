@@ -1,0 +1,23 @@
+﻿@model StoreFront.DATA.EF.Models.Genre
+
+<td colspan="4">
+    <form asp-action="AjaxEdit" id="GenreEditForm" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input type="hidden" asp-for="GenreId" />
+        <div class="form-group">
+            @*<label asp-for="GenreName" class="control-label"></label>*@
+            <input asp-for="GenreName" class="form-control" placeholder="Genre Name..." />
+            <span asp-validation-for="GenreName" class="text-danger"></span>
+        </div>
+        <div class="mt-1 text-center">
+            <input type="submit" value="Save" class="btn btn-primary" id="saveUpdate" />
+        </div>
+    </form>
+</td>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

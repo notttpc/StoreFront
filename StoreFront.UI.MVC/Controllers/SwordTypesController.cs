@@ -10,6 +10,7 @@ using StoreFront.DATA.EF.Models;
 
 namespace StoreFront.UI.MVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class SwordTypesController : Controller
     {
         private readonly AnimeShopContext _context;
@@ -22,11 +23,57 @@ namespace StoreFront.UI.MVC.Controllers
         // GET: SwordTypes
         public async Task<IActionResult> Index()
         {
-              return _context.SwordTypes != null ? 
+            ViewBag.Swords = _context.Products.Select(x => x.SwordId).ToList();
+            return _context.SwordTypes != null ? 
                           View(await _context.SwordTypes.ToListAsync()) :
                           Problem("Entity set 'AnimeShopContext.SwordTypes'  is null.");
         }
 
+        [Authorize]
+        [AcceptVerbs("POST")]
+        public JsonResult AjaxDelete(int id)
+        {
+            SwordType sword = _context.SwordTypes.Find(id);
+            _context.SwordTypes.Remove(sword);
+            _context.SaveChanges();
+
+            string message = $"Deleted the sword {sword.SwordType1} from the database!";
+            return Json(new { id, message });
+        }
+
+        public PartialViewResult SwordDetails(int id)
+        {
+            return PartialView(_context.SwordTypes.Find(id));
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult AjaxCreate(SwordType sword)
+        {
+            _context.SwordTypes.Add(sword);
+            _context.SaveChanges();
+            return Json(sword);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public PartialViewResult SwordEdit(int id)
+        {
+            return PartialView(_context.SwordTypes.Find(id));
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult AjaxEdit(SwordType sword)
+        {
+            _context.Update(sword);
+            _context.SaveChanges();
+            return Json(sword);
+        }
+
+        #region Old Scaffold
         // GET: SwordTypes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -160,6 +207,7 @@ namespace StoreFront.UI.MVC.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        #endregion
 
         private bool SwordTypeExists(int id)
         {

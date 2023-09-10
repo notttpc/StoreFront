@@ -1,0 +1,21 @@
+﻿@model StoreFront.DATA.EF.Models.SwordType
+
+<td colspan="4">
+    <form asp-action="AjaxEdit" method="post" id="SwordEditForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="SwordId" />
+
+        @*<label asp-for="SwordType1" class="control-label"></label>*@
+        <input asp-for="SwordType1" class="form-control" placeholder="Sword Name..." />
+        <span asp-validation-for="SwordType1" class="text-danger"></span>
+        <div class="mt-1 text-center">
+            <input type="submit" value="Save" class="btn btn-primary" id="saveUpdate" />
+        </div>
+    </form>
+</td>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

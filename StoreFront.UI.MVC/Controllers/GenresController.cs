@@ -10,6 +10,7 @@ using StoreFront.DATA.EF.Models;
 
 namespace StoreFront.UI.MVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class GenresController : Controller
     {
         private readonly AnimeShopContext _context;
@@ -22,143 +23,190 @@ namespace StoreFront.UI.MVC.Controllers
         // GET: Genres
         public async Task<IActionResult> Index()
         {
-              return _context.Genres != null ? 
+            ViewBag.Genres = _context.Products.Select(x => x.GenreId).ToList();
+            return _context.Genres != null ? 
                           View(await _context.Genres.ToListAsync()) :
                           Problem("Entity set 'AnimeShopContext.Genres'  is null.");
         }
 
-        // GET: Genres/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Genres == null)
-            {
-                return NotFound();
-            }
-
-            var genre = await _context.Genres
-                .FirstOrDefaultAsync(m => m.GenreId == id);
-            if (genre == null)
-            {
-                return NotFound();
-            }
-
-            return View(genre);
-        }
-
-        // GET: Genres/Create
         [Authorize]
-        public IActionResult Create()
+        [AcceptVerbs("POST")]
+        public JsonResult AjaxDelete(int id)
         {
-            return View();
+            Genre genre = _context.Genres.Find(id);
+            _context.Genres.Remove(genre);
+            _context.SaveChanges();
+
+            string message = $"Deleted the genre {genre.GenreName} from the database!";
+            return Json(new { id, message });
         }
 
-        // POST: Genres/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GenreId,GenreName")] Genre genre)
+        public PartialViewResult GenreDetails(int id)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(genre);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(genre);
+            return PartialView(_context.Genres.Find(id));
         }
 
-        // GET: Genres/Edit/5
-        [Authorize]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Genres == null)
-            {
-                return NotFound();
-            }
-
-            var genre = await _context.Genres.FindAsync(id);
-            if (genre == null)
-            {
-                return NotFound();
-            }
-            return View(genre);
-        }
-
-        // POST: Genres/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GenreId,GenreName")] Genre genre)
+        public JsonResult AjaxCreate(Genre genre)
         {
-            if (id != genre.GenreId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(genre);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GenreExists(genre.GenreId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(genre);
+            _context.Genres.Add(genre);
+            _context.SaveChanges();
+            return Json(genre);
         }
 
-        // GET: Genres/Delete/5
         [Authorize]
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public PartialViewResult GenreEdit(int id)
         {
-            if (id == null || _context.Genres == null)
-            {
-                return NotFound();
-            }
-
-            var genre = await _context.Genres
-                .FirstOrDefaultAsync(m => m.GenreId == id);
-            if (genre == null)
-            {
-                return NotFound();
-            }
-
-            return View(genre);
+            return PartialView(_context.Genres.Find(id));
         }
 
-        // POST: Genres/Delete/5
         [Authorize]
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public JsonResult AjaxEdit(Genre genre)
         {
-            if (_context.Genres == null)
-            {
-                return Problem("Entity set 'AnimeShopContext.Genres'  is null.");
-            }
-            var genre = await _context.Genres.FindAsync(id);
-            if (genre != null)
-            {
-                _context.Genres.Remove(genre);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _context.Update(genre);
+            _context.SaveChanges();
+            return Json(genre);
         }
+
+        #region Old Scaffold
+        //// GET: Genres/Details/5
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null || _context.Genres == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var genre = await _context.Genres
+        //        .FirstOrDefaultAsync(m => m.GenreId == id);
+        //    if (genre == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(genre);
+        //}
+
+        //// GET: Genres/Create
+        //[Authorize]
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
+
+        //// POST: Genres/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("GenreId,GenreName")] Genre genre)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(genre);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(genre);
+        //}
+
+        //// GET: Genres/Edit/5
+        //[Authorize]
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null || _context.Genres == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var genre = await _context.Genres.FindAsync(id);
+        //    if (genre == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(genre);
+        //}
+
+        //// POST: Genres/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[Authorize]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("GenreId,GenreName")] Genre genre)
+        //{
+        //    if (id != genre.GenreId)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(genre);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!GenreExists(genre.GenreId))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(genre);
+        //}
+
+        //// GET: Genres/Delete/5
+        //[Authorize]
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null || _context.Genres == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var genre = await _context.Genres
+        //        .FirstOrDefaultAsync(m => m.GenreId == id);
+        //    if (genre == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(genre);
+        //}
+
+        //// POST: Genres/Delete/5
+        //[Authorize]
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Genres == null)
+        //    {
+        //        return Problem("Entity set 'AnimeShopContext.Genres'  is null.");
+        //    }
+        //    var genre = await _context.Genres.FindAsync(id);
+        //    if (genre != null)
+        //    {
+        //        _context.Genres.Remove(genre);
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
+        #endregion
 
         private bool GenreExists(int id)
         {
